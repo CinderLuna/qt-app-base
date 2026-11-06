@@ -1,0 +1,27 @@
+# Build directories
+build/
+bin/
+lib/
+out/
+.cache/
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.user
+*.user.*
+.clangd/
+.clangd
+compile_commands.json
+
+# CMake generated files
+CMakeUserPresets.json
+CMakeFiles/
+CMakeCache.txt
+*.cmake
+!CMakeLists.txt
+
+# OS generated files
+Thumbs.db
+Desktop.ini
+.DS_Store

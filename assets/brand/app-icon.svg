@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="Cinderluna Cb Logo">
+  <title>Cinderluna Cb Base</title>
+  <desc>Capital C with base b monogram for Cinderluna Qt App Base</desc>
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#232933"/>
+      <stop offset="100%" stop-color="#14171D"/>
+    </linearGradient>
+
+    <!-- Capital C Gradient (Platinum) -->
+    <linearGradient id="c_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#DCE4EC"/>
+    </linearGradient>
+
+    <!-- Base b Gradient (Electric Mint / Cyan) -->
+    <linearGradient id="b_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4FD1C5"/>
+      <stop offset="100%" stop-color="#319795"/>
+    </linearGradient>
+
+    <!-- Subtle Drop Shadow -->
+    <filter id="softShadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3.5" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <!-- Background Plate -->
+  <rect width="128" height="128" rx="28" fill="url(#bg)"/>
+  <rect x="1.5" y="1.5" width="125" height="125" rx="26.5" fill="none" stroke="#3A4659" stroke-width="1" stroke-opacity="0.4"/>
+
+  <!-- Monogram Cb: Capital C + Base b -->
+  <g filter="url(#softShadow)">
+    <!-- Capital C (Cinderluna) -->
+    <path d="M 64 40
+             C 59 33 52 29 43 29
+             C 24.5 29 15 44 15 64
+             C 15 84 24.5 99 43 99
+             C 52 99 59 95 64 88"
+          fill="none"
+          stroke="url(#c_grad)"
+          stroke-width="12"
+          stroke-linecap="round"
+          stroke-linejoin="round"/>
+
+    <!-- Base b (Base indicator) -->
+    <!-- Vertical stem -->
+    <path d="M 80 48 L 80 99"
+          fill="none"
+          stroke="url(#b_grad)"
+          stroke-width="10"
+          stroke-linecap="round"/>
+
+    <!-- Rounded bowl -->
+    <path d="M 80 73
+             C 84 67 92 65 99 67
+             C 107 70 111 77 111 84
+             C 111 91 106 99 98 99
+             C 91 99 84 96 80 91"
+          fill="none"
+          stroke="url(#b_grad)"
+          stroke-width="10"
+          stroke-linecap="round"
+          stroke-linejoin="round"/>
+  </g>
+</svg>

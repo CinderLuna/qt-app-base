@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="Cb Mark">
+  <defs>
+    <linearGradient id="mark_c" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#CBD5E0"/>
+    </linearGradient>
+    <linearGradient id="mark_b" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4FD1C5"/>
+      <stop offset="100%" stop-color="#319795"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Capital C -->
+  <path d="M 64 40
+           C 59 33 52 29 43 29
+           C 24.5 29 15 44 15 64
+           C 15 84 24.5 99 43 99
+           C 52 99 59 95 64 88"
+        fill="none"
+        stroke="url(#mark_c)"
+        stroke-width="12"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+  <!-- Base b -->
+  <path d="M 80 48 L 80 99"
+        fill="none"
+        stroke="url(#mark_b)"
+        stroke-width="10"
+        stroke-linecap="round"/>
+
+  <path d="M 80 73
+           C 84 67 92 65 99 67
+           C 107 70 111 77 111 84
+           C 111 91 106 99 98 99
+           C 91 99 84 96 80 91"
+        fill="none"
+        stroke="url(#mark_b)"
+        stroke-width="10"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+</svg>
