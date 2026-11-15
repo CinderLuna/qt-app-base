@@ -118,6 +118,15 @@ On Linux (both X11 and Wayland environments):
      `ResizeGripPainter` paints an antialiased 12px circular path on the outer edge in restored state, perfectly blending the bottom-right corner grip into the rounded status bar.
    - **Dynamic Maximized/Fullscreen Squaring**:
      A dynamic QObject property `windowRestored` toggles between `true` (floating/restored) and `false` (maximized/fullscreen). The theme stylesheet dynamically collapses all corner radii to `0px` when `QMainWindow[windowRestored="false"]`, guaranteeing pixel-perfect alignment against screen edges.
+7. **Modal Dialogs & GNOME 'Attach Modal Dialogs' Behavior**:
+   - On GNOME desktop environments, Mutter enforces `org.gnome.mutter attach-modal-dialogs: true` by default. Under this setting, any modal dialog created with a parent window (`transient_for`) is attached to the parent titlebar, and moving the dialog moves the parent window along with it.
+   - For informational windows (such as "About" dialogs) that should float and move completely independently without moving the main window:
+     - Instantiate with `parent = nullptr` or set `setWindowModality(Qt::NonModal)`.
+     - Hook lifecycle management via `connect(this, &QObject::destroyed, dialog, &QWidget::close)` and `Qt::WA_DeleteOnClose`.
+   - End-users can toggle this desktop-wide behavior off via GNOME Tweaks (*Windows &rarr; Attach Modal Dialogs*) or terminal:
+     ```bash
+     gsettings set org.gnome.mutter attach-modal-dialogs false
+     ```
 
 ---
 
