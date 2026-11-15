@@ -111,19 +111,16 @@ On Linux (both X11 and Wayland environments):
    - **Coordinated Subsurface Framing**:
      Central contents are hosted inside `centralContainer_` (an internal framing widget accessed via `BaseWindow::setCentralWidget` and `BaseWindow::centralWidget`).
      The window structure forms a continuous 1px outline:
-     - `WindowHeader`: `border-top-left-radius: 12px; border-top-right-radius: 12px;` with top/left/right 1px borders.
+     - `WindowHeader`: `border-top-left-radius: 8px; border-top-right-radius: 8px;` with top/left/right 1px borders.
      - `centralContainer_`: left/right 1px borders (and bottom border when status bar is hidden).
-     - `BaseStatusBar`: `border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;` with bottom/left/right 1px borders.
+     - `BaseStatusBar`: `border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;` with bottom/left/right 1px borders.
    - **Resize Grip Harmony**:
-     `ResizeGripPainter` paints an antialiased 12px circular path on the outer edge in restored state, perfectly blending the bottom-right corner grip into the rounded status bar.
+     `ResizeGripPainter` paints an antialiased 8px circular path on the outer edge in restored state, perfectly blending the bottom-right corner grip into the rounded status bar.
    - **Dynamic Maximized/Fullscreen Squaring**:
      A dynamic QObject property `windowRestored` toggles between `true` (floating/restored) and `false` (maximized/fullscreen). The theme stylesheet dynamically collapses all corner radii to `0px` when `QMainWindow[windowRestored="false"]`, guaranteeing pixel-perfect alignment against screen edges.
-7. **Modal Dialogs & GNOME 'Attach Modal Dialogs' Behavior**:
-   - On GNOME desktop environments, Mutter enforces `org.gnome.mutter attach-modal-dialogs: true` by default. Under this setting, any modal dialog created with a parent window (`transient_for`) is attached to the parent titlebar, and moving the dialog moves the parent window along with it.
-   - For informational windows (such as "About" dialogs) that should float and move completely independently without moving the main window:
-     - Instantiate with `parent = nullptr` or set `setWindowModality(Qt::NonModal)`.
-     - Hook lifecycle management via `connect(this, &QObject::destroyed, dialog, &QWidget::close)` and `Qt::WA_DeleteOnClose`.
-   - End-users can toggle this desktop-wide behavior off via GNOME Tweaks (*Windows &rarr; Attach Modal Dialogs*) or terminal:
+7. **Native Modal Dialogs & GNOME Compositor Integration**:
+   - On GNOME desktop environments, Mutter enforces `org.gnome.mutter attach-modal-dialogs: true` by default. Under this native GNOME behavior, standard modal dialogs parented to the window (e.g. `QMessageBox::about(this, ...)`) appear as attached sheets pinned to the parent titlebar, and moving the dialog moves the parent window with it.
+   - End-users who prefer detached, free-floating modal dialogs across their GNOME desktop can toggle this behavior via GNOME Tweaks (*Windows &rarr; Attach Modal Dialogs*) or terminal:
      ```bash
      gsettings set org.gnome.mutter attach-modal-dialogs false
      ```

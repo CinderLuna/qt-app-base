@@ -89,28 +89,21 @@ class TemplateMainWindow : public BaseWindow
             "&About Cinderluna App Base…", this,
             [this]
             {
-                auto *aboutBox = new QMessageBox(nullptr);
-                aboutBox->setAttribute(Qt::WA_DeleteOnClose);
-                aboutBox->setWindowTitle("About Cinderluna Application");
-                aboutBox->setText(
+                QMessageBox::about(
+                    this, "About Cinderluna Application",
                     "<h3>Cinderluna Qt Application Base</h3>"
                     "<p>The official starting template for Cinderluna desktop applications.</p>"
                     "<ul>"
                     "<li>Native Windows 11 custom title bar with Snap Layouts</li>"
                     "<li>Linux custom title bar with GNOME Adwaita window controls</li>"
-                    "<li>Translucent rounded window corners on Linux</li>"
+                    "<li>Native rounded window corners on Linux (8px radius)</li>"
                     "<li>Integrated menu bar and elided window title</li>"
                     "<li>Custom status bar with 6-dot resize grip</li>"
                     "<li>Multi-theme styling engine with automatic dark/light tracking</li>"
                     "<li>Integrated in-process Qt Widget Inspector (Debug mode)</li>"
                     "</ul>");
-                if (!QApplication::windowIcon().isNull())
-                    aboutBox->setIconPixmap(QApplication::windowIcon().pixmap(48, 48));
-                aboutBox->setWindowModality(Qt::NonModal);
-                connect(this, &QObject::destroyed, aboutBox, &QWidget::close);
-                aboutBox->show();
             });
-        helpMenu->addAction("About &Qt…", this, [] { QMessageBox::aboutQt(nullptr); });
+        helpMenu->addAction("About &Qt…", qApp, &QApplication::aboutQt);
     }
 
     void setupHeaderSearch()

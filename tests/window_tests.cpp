@@ -112,8 +112,8 @@ void WindowTests::testThemeManager()
 #if (defined(Q_OS_LINUX) || defined(Q_OS_UNIX)) && !defined(Q_OS_DARWIN)
     QVERIFY2(css.contains("#e01b24"), "Stylesheet must include GNOME close button hover color");
     QVERIFY2(css.contains("border-radius:13px"), "Stylesheet must style GNOME circular caption buttons");
-    QVERIFY2(css.contains("border-top-left-radius:12px"), "Stylesheet must style top rounded corners");
-    QVERIFY2(css.contains("border-bottom-left-radius:12px"), "Stylesheet must style bottom rounded corners");
+    QVERIFY2(css.contains("border-top-left-radius:8px"), "Stylesheet must style top rounded corners");
+    QVERIFY2(css.contains("border-bottom-left-radius:8px"), "Stylesheet must style bottom rounded corners");
     QVERIFY2(css.contains("QMainWindow[windowRestored=\"false\"]"), "Stylesheet must square corners when maximized");
 #endif
 }

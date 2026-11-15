@@ -33,21 +33,22 @@ bool ResizeGripPainter::eventFilter(QObject *object, QEvent *event)
         const qreal w = grip->width();
         const qreal h = grip->height();
         QPainterPath p;
+        const qreal radius = 8.0;
         if (rtl)
         {
             p.moveTo(0, 0);
             p.lineTo(w, 0);
             p.lineTo(w, h);
-            p.lineTo(12.0, h);
-            p.quadTo(0, h, 0, h - 12.0);
+            p.lineTo(radius, h);
+            p.quadTo(0, h, 0, h - radius);
             p.closeSubpath();
         }
         else
         {
             p.moveTo(0, 0);
             p.lineTo(w, 0);
-            p.lineTo(w, h - 12.0);
-            p.quadTo(w, h, w - 12.0, h);
+            p.lineTo(w, h - radius);
+            p.quadTo(w, h, w - radius, h);
             p.lineTo(0, h);
             p.closeSubpath();
         }

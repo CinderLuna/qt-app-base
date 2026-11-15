@@ -51,7 +51,7 @@ You can also run `run.bat` to launch the application.
 
 * **Custom Title Bar & Window Frame**: Edge-to-edge client area with platform-native caption controls (minimize, maximize/restore, close).
   - **Windows**: Windows 11 Fluent style caption buttons with Snap Layouts (`HTMAXBUTTON`), DWM drop shadows, and Aero Snap.
-  - **Linux**: Authentic GNOME (Adwaita) circular window controls (`border-radius: 13px`, 8px spacing, GNOME Red close hover), native window dragging (`startSystemMove`), 8-direction edge/corner resizing, and **12px rounded window corners** via translucent ARGB framing (`Qt::WA_TranslucentBackground`) with dynamic squaring when maximized or fullscreen.
+  - **Linux**: Authentic GNOME (Adwaita) circular window controls (`border-radius: 13px`, 8px spacing, GNOME Red close hover), native window dragging (`startSystemMove`), 8-direction edge/corner resizing, and **native 8px rounded window corners** via translucent ARGB framing (`Qt::WA_TranslucentBackground`) with dynamic squaring when maximized or fullscreen.
 * **Strict Modern C++ Compilation**: Defaults to `QT_APP_BASE_STRICT_MODE=ON` with `-Wall -Wextra -Wpedantic -Werror -Wshadow -Wconversion -Wold-style-cast`, `QT_NO_KEYWORDS`, and `QT_DISABLE_DEPRECATED_UP_TO=0x060200` to guarantee strict API conformance and zero warnings.
 * **Integrated Menu Bar**: `QMenuBar` embedded directly inside the custom title bar.
 * **Search Input with Shortcut**: Right-aligned `Ctrl+K` shortcut badge using [`SearchLineEdit`](include/qtappbase/SearchLineEdit.h).

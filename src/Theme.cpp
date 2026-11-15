@@ -121,8 +121,8 @@ QString ThemeColors::stylesheet() const
       /* --- Custom Title Bar (Header) --- */
       QWidget#applicationHeader {
           background:$chrome;
-          border-top-left-radius:12px;
-          border-top-right-radius:12px;
+          border-top-left-radius:8px;
+          border-top-right-radius:8px;
           border-top:1px solid $border;
           border-left:1px solid $border;
           border-right:1px solid $border;
@@ -156,8 +156,8 @@ QString ThemeColors::stylesheet() const
           border-right:0;
       }
       QWidget#centralContainer[hasStatusBar="false"] {
-          border-bottom-left-radius:12px;
-          border-bottom-right-radius:12px;
+          border-bottom-left-radius:8px;
+          border-bottom-right-radius:8px;
           border-bottom:1px solid $border;
       }
       QMainWindow[windowRestored="false"] QWidget#centralContainer[hasStatusBar="false"] {
@@ -203,7 +203,7 @@ QString ThemeColors::stylesheet() const
     css += R"(
       QStatusBar {
           padding:2px 8px; background:$chrome; border-top:1px solid $border;
-          border-bottom-left-radius:12px; border-bottom-right-radius:12px;
+          border-bottom-left-radius:8px; border-bottom-right-radius:8px;
           border-bottom:1px solid $border; border-left:1px solid $border; border-right:1px solid $border;
       }
       QMainWindow[windowRestored="false"] QStatusBar {
