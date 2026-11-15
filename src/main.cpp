@@ -2,6 +2,7 @@
 // Copyright (C) 2026 Cinderluna
 
 #include "qtappbase/BaseWindow.h"
+#include "qtappbase/Inspector.h"
 #include "qtappbase/SearchLineEdit.h"
 #include "qtappbase/Theme.h"
 #include "qtappbase/UiIcons.h"
@@ -65,6 +66,15 @@ class TemplateMainWindow : public BaseWindow
         // --- View Menu ---
         auto *viewMenu = menuBar->addMenu("&View");
         viewMenu->addAction(fullScreenAction());
+#if !defined(NDEBUG) || defined(QT_DEBUG) || defined(QTAPPBASE_DEBUG)
+        viewMenu->addSeparator();
+        auto *inspectorAction = viewMenu->addAction("&Widget Inspector", this, [] {
+            if (auto *ins = qtinspector::Inspector::install())
+                ins->toggleVisible();
+        });
+        inspectorAction->setShortcut(QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_F12));
+        inspectorAction->setStatusTip("Toggle Qt Widget Inspector devtool (F8 to select widgets)");
+#endif
 
         // --- Theme & Appearance Menus ---
         auto *themeMenu = menuBar->addMenu("&Theme");
@@ -138,6 +148,11 @@ int main(int argc, char *argv[])
 
     // Set application icon from resource
     QApplication::setWindowIcon(QIcon(":/brand/app-icon.svg"));
+
+#if !defined(NDEBUG) || defined(QT_DEBUG) || defined(QTAPPBASE_DEBUG)
+    // Devtools: Qt Widget Inspector (accessible in debug mode only)
+    qtinspector::Inspector::install();
+#endif
 
     TemplateMainWindow window;
     window.show();

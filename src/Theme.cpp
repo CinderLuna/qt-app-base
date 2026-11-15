@@ -113,6 +113,60 @@ QPalette ThemeColors::palette() const
 
 QString ThemeColors::stylesheet() const
 {
+#if (defined(Q_OS_LINUX) || defined(Q_OS_UNIX)) && !defined(Q_OS_DARWIN)
+    QString css = R"(
+      QMainWindow { background:transparent; }
+      QMainWindow, QWidget { background:$background; color:$text; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Cantarell, Ubuntu, sans-serif; font-size:14px; }
+
+      /* --- Custom Title Bar (Header) --- */
+      QWidget#applicationHeader {
+          background:$chrome;
+          border-top-left-radius:12px;
+          border-top-right-radius:12px;
+          border-top:1px solid $border;
+          border-left:1px solid $border;
+          border-right:1px solid $border;
+      }
+      QMainWindow[windowRestored="false"] QWidget#applicationHeader {
+          border-top-left-radius:0;
+          border-top-right-radius:0;
+          border-top:0;
+          border-left:0;
+          border-right:0;
+      }
+      QWidget#captionControls { background:transparent; }
+      QWidget#captionControls QToolButton {
+          background:transparent; color:$text; border:0; border-radius:13px;
+          min-width:26px; max-width:26px; min-height:26px; max-height:26px;
+          margin:0; padding:0;
+      }
+      QWidget#captionControls QToolButton:hover { background:$selection; border-radius:13px; }
+      QWidget#captionControls QToolButton:pressed { background:$selection; border-radius:13px; }
+      QWidget#captionControls QToolButton#captionClose:hover { background:#e01b24; color:white; border-radius:13px; }
+      QWidget#captionControls QToolButton#captionClose:pressed { background:#a51d2d; color:white; border-radius:13px; }
+
+      /* --- Central Framing Container --- */
+      QWidget#centralContainer {
+          background:$background;
+          border-left:1px solid $border;
+          border-right:1px solid $border;
+      }
+      QMainWindow[windowRestored="false"] QWidget#centralContainer {
+          border-left:0;
+          border-right:0;
+      }
+      QWidget#centralContainer[hasStatusBar="false"] {
+          border-bottom-left-radius:12px;
+          border-bottom-right-radius:12px;
+          border-bottom:1px solid $border;
+      }
+      QMainWindow[windowRestored="false"] QWidget#centralContainer[hasStatusBar="false"] {
+          border-bottom-left-radius:0;
+          border-bottom-right-radius:0;
+          border-bottom:0;
+      }
+)";
+#else
     QString css = R"(
       QMainWindow, QWidget { background:$background; color:$text; font-family:'Segoe UI', sans-serif; font-size:14px; }
       
@@ -124,8 +178,12 @@ QString ThemeColors::stylesheet() const
           padding:0; font-family:'Segoe Fluent Icons','Segoe MDL2 Assets'; font-size:10px;
       }
       QWidget#captionControls QToolButton:hover { background:$selection; }
+      QWidget#captionControls QToolButton:pressed { background:$selection; }
       QWidget#captionControls QToolButton#captionClose:hover { background:#C42B1C; color:white; }
-      
+      QWidget#captionControls QToolButton#captionClose:pressed { background:#991D12; color:white; }
+)";
+#endif
+    css += R"(
       QLabel#brandIcon { background:transparent; }
       QLabel#windowTitleLabel { font-size:14px; color:$muted; background:transparent; font-weight:500; }
       QFrame#titleMenuSeparator { background:$border; border:0; }
@@ -140,7 +198,25 @@ QString ThemeColors::stylesheet() const
       QMenu::separator { height:1px; background:$border; margin:4px 6px; }
 
       /* --- Status Bar --- */
+)";
+#if (defined(Q_OS_LINUX) || defined(Q_OS_UNIX)) && !defined(Q_OS_DARWIN)
+    css += R"(
+      QStatusBar {
+          padding:2px 8px; background:$chrome; border-top:1px solid $border;
+          border-bottom-left-radius:12px; border-bottom-right-radius:12px;
+          border-bottom:1px solid $border; border-left:1px solid $border; border-right:1px solid $border;
+      }
+      QMainWindow[windowRestored="false"] QStatusBar {
+          border-bottom-left-radius:0; border-bottom-right-radius:0;
+          border-bottom:0; border-left:0; border-right:0;
+      }
+)";
+#else
+    css += R"(
       QStatusBar { padding:2px 8px; background:$chrome; border-top:1px solid $border; }
+)";
+#endif
+    css += R"(
       QStatusBar::item { border:0; }
       QStatusBar QWidget { background:transparent; }
       QStatusBar QLabel { color:$muted; font-size:12px; }
@@ -296,6 +372,7 @@ void ThemeManager::refresh()
     auto *hints = QGuiApplication::styleHints();
     if (hints)
     {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
         if (appearance_ == Appearance::System)
             hints->unsetColorScheme();
         else
@@ -304,6 +381,9 @@ void ThemeManager::refresh()
 
         dark_ = appearance_ == Appearance::Dark ||
                 (appearance_ == Appearance::System && hints->colorScheme() == Qt::ColorScheme::Dark);
+#else
+        dark_ = (appearance_ == Appearance::Dark);
+#endif
     }
     else
     {

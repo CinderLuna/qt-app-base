@@ -1,6 +1,6 @@
 # Qt App Base
 
-An open-source C++17 / Qt 6 desktop application template by **Cinderluna**. It provides a Windows 11 custom title bar with Snap Layouts, an integrated menu bar, a custom status bar, and dynamic theming.
+An open-source C++17 / Qt 6 desktop application template by **Cinderluna**. It provides a custom title bar with integrated caption controls, an integrated menu bar, a custom status bar, and dynamic theming on both Linux and Windows.
 
 The central client area is clean and empty, ready for application-specific widgets.
 
@@ -8,7 +8,23 @@ The central client area is clean and empty, ready for application-specific widge
 
 ## Quick Start
 
-### Build and Run
+### Linux
+
+Run these commands in your shell:
+
+```bash
+# Configure, build, and test
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build -j $(nproc)
+ctest --test-dir build --output-on-failure
+
+# Launch template
+./build/qt_app_base_demo
+```
+
+You can also run `./run.sh` to automatically build (if needed) and launch the application.
+
+### Windows
 
 Run these commands in PowerShell (adjust paths for your local Qt and compiler installation):
 
@@ -33,12 +49,16 @@ You can also run `run.bat` to launch the application.
 
 ## Core Features
 
-* **Custom Title Bar**: Windows 11 Snap Layouts on maximize button (`HTMAXBUTTON`), DWM drop shadows, and Aero Snap. See [ARCHITECTURE.md](ARCHITECTURE.md).
+* **Custom Title Bar & Window Frame**: Edge-to-edge client area with platform-native caption controls (minimize, maximize/restore, close).
+  - **Windows**: Windows 11 Fluent style caption buttons with Snap Layouts (`HTMAXBUTTON`), DWM drop shadows, and Aero Snap.
+  - **Linux**: Authentic GNOME (Adwaita) circular window controls (`border-radius: 13px`, 8px spacing, GNOME Red close hover), native window dragging (`startSystemMove`), 8-direction edge/corner resizing, and **12px rounded window corners** via translucent ARGB framing (`Qt::WA_TranslucentBackground`) with dynamic squaring when maximized or fullscreen.
+* **Strict Modern C++ Compilation**: Defaults to `QT_APP_BASE_STRICT_MODE=ON` with `-Wall -Wextra -Wpedantic -Werror -Wshadow -Wconversion -Wold-style-cast`, `QT_NO_KEYWORDS`, and `QT_DISABLE_DEPRECATED_UP_TO=0x060200` to guarantee strict API conformance and zero warnings.
 * **Integrated Menu Bar**: `QMenuBar` embedded directly inside the custom title bar.
 * **Search Input with Shortcut**: Right-aligned `Ctrl+K` shortcut badge using [`SearchLineEdit`](include/qtappbase/SearchLineEdit.h).
 * **Elided Window Title**: Right-side text elision with [`WindowTitleLabel`](include/qtappbase/WindowTitleLabel.h).
 * **Custom Status Bar**: 6-dot DPI-aware resize grip with status and metric labels.
 * **Theme Engine**: 6 color themes (`Slate`, `Olive`, `Forest`, `Parchment`, `Aubergine`, `Rosewood`) with system dark mode tracking.
+* **Developer Tools (Widget Inspector)**: Integrated in-process inspection of widget hierarchies, layouts, geometries, and size policies. Accessible **strictly in Debug mode**; compiled out/inert in Release builds.
 
 ---
 
@@ -77,6 +97,31 @@ public:
     }
 };
 ```
+
+---
+
+## Developer Tools (Qt Widget Inspector)
+
+`qt-app-base` bundles an in-process Qt Widget Inspector designed for rapid UI debugging, hierarchy auditing, and layout inspection.
+
+### Debug Mode Gating
+
+The inspector devtool is **strictly accessible in Debug mode**:
+- **Debug Builds (`-DCMAKE_BUILD_TYPE=Debug` or MSVC Debug)**: `qtinspector::Inspector::isAvailable()` returns `true`. The inspector toolbar automatically floats inside active windows, hotkeys are enabled, and the `View -> Widget Inspector` menu item is present.
+- **Release Builds (`-DCMAKE_BUILD_TYPE=Release` or MSVC Release)**: Devtools are completely disabled at compile-time and runtime. `qtinspector::Inspector::install()` is a safe no-op returning `nullptr`, `report()` returns empty, and hotkeys/toolbars are completely inaccessible.
+
+### Devtool Controls & Shortcuts
+
+| Action | Shortcut / Trigger | Description |
+| :--- | :--- | :--- |
+| **Select / Inspect** | **F8** / `Select` button | Toggles inspection picking. Hover outlines widgets in blue; left-click copies a detailed hierarchy & layout report to the system clipboard without triggering widget actions. |
+| **Parent Widget** | `Parent` button | Navigates to and copies the inspection report of the selected widget's parent. |
+| **Copy Report** | `Copy` button | Re-copies the current selected widget's report. |
+| **Exit Selection** | **Escape** | Leaves widget picking mode and restores original mouse tracking settings. |
+| **Toggle Toolbar** | **Ctrl+Alt+F12** / `Hide` button / `View -> Widget Inspector` | Shows or hides the floating inspector bar. |
+| **Move Toolbar** | Drag handle (6 dots) | Relocates the floating inspector bar anywhere within the window. |
+
+Privacy notice: Editor texts, input contents, tooltips, and dynamic property secrets are intentionally excluded from clipboard reports.
 
 ---
 

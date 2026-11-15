@@ -68,6 +68,9 @@ class WindowHeader : public QWidget
   protected:
     bool event(QEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void leaveEvent(QEvent *event) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
     void showEvent(QShowEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
@@ -78,6 +81,8 @@ class WindowHeader : public QWidget
     QToolButton *minimize_ = nullptr;
     QToolButton *maximize_ = nullptr;
     QToolButton *close_ = nullptr;
+    QPoint dragStartPos_;
+    bool dragPending_ = false;
 };
 
 } // namespace qtappbase
