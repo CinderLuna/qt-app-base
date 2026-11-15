@@ -3,10 +3,12 @@
 
 #include "qtappbase/BaseStatusBar.h"
 #include "qtappbase/BaseWindow.h"
+#include "qtappbase/Inspector.h"
 #include "qtappbase/SearchLineEdit.h"
 #include "qtappbase/Theme.h"
 #include "qtappbase/WindowHeader.h"
 #include "qtappbase/WindowTitleLabel.h"
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
 #include <QSignalSpy>
@@ -55,6 +57,14 @@ void WindowTests::testWindowHeader()
         QCOMPARE(header.minimizeButton()->objectName(), QString("captionMinimize"));
         QCOMPARE(header.maximizeButton()->objectName(), QString("captionMaximize"));
         QCOMPARE(header.closeButton()->objectName(), QString("captionClose"));
+
+#if (defined(Q_OS_LINUX) || defined(Q_OS_UNIX)) && !defined(Q_OS_DARWIN)
+        QCOMPARE(header.minimizeButton()->size(), QSize(26, 26));
+        QCOMPARE(header.maximizeButton()->size(), QSize(26, 26));
+        QCOMPARE(header.closeButton()->size(), QSize(26, 26));
+        QCOMPARE(header.captionControlsWidget()->layout()->spacing(), 8);
+        QCOMPARE(header.row()->contentsMargins().right(), 12);
+#endif
     }
 }
 
@@ -99,6 +109,13 @@ void WindowTests::testThemeManager()
     QVERIFY2(!css.isEmpty(), "Generated stylesheet must not be empty");
     QVERIFY2(css.contains("QWidget#applicationHeader"), "Stylesheet must style applicationHeader");
     QVERIFY2(css.contains("QStatusBar"), "Stylesheet must style QStatusBar");
+#if (defined(Q_OS_LINUX) || defined(Q_OS_UNIX)) && !defined(Q_OS_DARWIN)
+    QVERIFY2(css.contains("#e01b24"), "Stylesheet must include GNOME close button hover color");
+    QVERIFY2(css.contains("border-radius:13px"), "Stylesheet must style GNOME circular caption buttons");
+    QVERIFY2(css.contains("border-top-left-radius:8px"), "Stylesheet must style top rounded corners");
+    QVERIFY2(css.contains("border-bottom-left-radius:8px"), "Stylesheet must style bottom rounded corners");
+    QVERIFY2(css.contains("QMainWindow[windowRestored=\"false\"]"), "Stylesheet must square corners when maximized");
+#endif
 }
 
 void WindowTests::testBaseWindow()
@@ -111,6 +128,42 @@ void WindowTests::testBaseWindow()
     QVERIFY2(window.headerMenuBar() != nullptr, "Window menu bar must not be null");
     QVERIFY2(window.appStatusBar() != nullptr, "Window status bar must not be null");
     QVERIFY2(window.brandIconLabel() != nullptr, "Window brand icon label must not be null");
+    QCOMPARE(window.isDevtoolsAvailable(), qtinspector::Inspector::isAvailable());
+    QVERIFY2(BaseWindow::autoInstallDevtools(), "Devtools auto-install should default to true");
+
+#if (defined(Q_OS_LINUX) || defined(Q_OS_UNIX)) && !defined(Q_OS_DARWIN)
+    QVERIFY2(window.windowFlags().testFlag(Qt::FramelessWindowHint),
+             "BaseWindow should set Qt::FramelessWindowHint on Linux");
+    QVERIFY2(window.testAttribute(Qt::WA_TranslucentBackground),
+             "BaseWindow should set Qt::WA_TranslucentBackground on Linux");
+    QCOMPARE(window.property("windowRestored").toBool(), true);
+#endif
+
+    auto *sampleWidget = new QLabel("Test Content", &window);
+    window.setCentralWidget(sampleWidget);
+    QCOMPARE(window.centralWidget(), sampleWidget);
+
+    window.showMaximized();
+    QVERIFY(window.isMaximized());
+#if (defined(Q_OS_LINUX) || defined(Q_OS_UNIX)) && !defined(Q_OS_DARWIN)
+    QCOMPARE(window.property("windowRestored").toBool(), false);
+#endif
+    window.toggleFullScreen();
+    QVERIFY(window.isFullScreen());
+#if (defined(Q_OS_LINUX) || defined(Q_OS_UNIX)) && !defined(Q_OS_DARWIN)
+    QCOMPARE(window.property("windowRestored").toBool(), false);
+#endif
+    window.toggleFullScreen();
+    QVERIFY(!window.isFullScreen());
+    QVERIFY2(window.isMaximized(), "Exiting fullscreen should restore maximized state");
+#if (defined(Q_OS_LINUX) || defined(Q_OS_UNIX)) && !defined(Q_OS_DARWIN)
+    QCOMPARE(window.property("windowRestored").toBool(), false);
+#endif
+
+    window.showNormal();
+#if (defined(Q_OS_LINUX) || defined(Q_OS_UNIX)) && !defined(Q_OS_DARWIN)
+    QCOMPARE(window.property("windowRestored").toBool(), true);
+#endif
 }
 
 void WindowTests::testSearchLineEdit()

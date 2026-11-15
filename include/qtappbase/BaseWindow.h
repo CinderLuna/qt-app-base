@@ -15,6 +15,11 @@
 class QFrame;
 class QAction;
 
+namespace qtinspector
+{
+class Inspector;
+}
+
 namespace qtappbase
 {
 
@@ -83,6 +88,10 @@ class BaseWindow : public QMainWindow
     /// Overrides window title to update both QMainWindow and custom title label
     void setWindowTitle(const QString &title);
 
+    /// Manages the central workspace widget inside the styled framing container
+    void setCentralWidget(QWidget *widget);
+    QWidget *centralWidget() const;
+
     /// Fullscreen management
     void toggleFullScreen();
     bool isExtendedHeader() const
@@ -95,10 +104,22 @@ class BaseWindow : public QMainWindow
         return fullScreenAction_;
     }
 
+    /// Developer tools (Widget Inspector) support:
+    /// Returns true if devtools are accessible in this build (debug mode).
+    static bool isDevtoolsAvailable();
+
+    /// Returns the active Inspector instance, or nullptr if not installed or release mode.
+    static qtinspector::Inspector *inspector();
+
+    /// In debug mode, automatically installs the widget inspector on showEvent. Enabled by default.
+    static void setAutoInstallDevtools(bool enabled);
+    static bool autoInstallDevtools();
+
   protected:
     void showEvent(QShowEvent *event) override;
     void changeEvent(QEvent *event) override;
     bool nativeEvent(const QByteArray &eventType, void *message, qintptr *result) override;
+    bool eventFilter(QObject *watched, QEvent *event) override;
 
     /// Override in derived classes to perform custom reactions to theme changes
     virtual void onThemeChanged(const ThemeColors &colors);
@@ -107,9 +128,14 @@ class BaseWindow : public QMainWindow
     void setupBaseUi();
     void syncWindowsChrome();
     void applyCurrentTheme();
+    Qt::Edges calculateEdges(const QPoint &pos) const;
+    void updateBorderCursor(Qt::Edges edges);
+    void updateCornerRadii();
 
     bool extendedHeader_ = false;
+    Qt::WindowStates savedStateBeforeFullScreen_ = Qt::WindowNoState;
     WindowHeader *header_ = nullptr;
+    QWidget *centralContainer_ = nullptr;
     QLabel *brandIconLabel_ = nullptr;
     QMenuBar *appMenu_ = nullptr;
     QFrame *menuSeparator_ = nullptr;

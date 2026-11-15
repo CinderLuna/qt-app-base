@@ -5,6 +5,7 @@
 #include "qtappbase/Theme.h"
 #include <QEvent>
 #include <QPainter>
+#include <QPainterPath>
 #include <QSizeGrip>
 
 namespace qtappbase
@@ -23,7 +24,43 @@ bool ResizeGripPainter::eventFilter(QObject *object, QEvent *event)
 
     QPainter painter(grip);
     const auto colors = ThemeManager::instance().colors();
+#if (defined(Q_OS_LINUX) || defined(Q_OS_UNIX)) && !defined(Q_OS_DARWIN)
+    const bool isMax = grip->window() && (grip->window()->isMaximized() || grip->window()->isFullScreen());
+    if (!isMax)
+    {
+        painter.setRenderHint(QPainter::Antialiasing, true);
+        const bool rtl = grip->layoutDirection() == Qt::RightToLeft;
+        const qreal w = grip->width();
+        const qreal h = grip->height();
+        QPainterPath p;
+        const qreal radius = 8.0;
+        if (rtl)
+        {
+            p.moveTo(0, 0);
+            p.lineTo(w, 0);
+            p.lineTo(w, h);
+            p.lineTo(radius, h);
+            p.quadTo(0, h, 0, h - radius);
+            p.closeSubpath();
+        }
+        else
+        {
+            p.moveTo(0, 0);
+            p.lineTo(w, 0);
+            p.lineTo(w, h - radius);
+            p.quadTo(w, h, w - radius, h);
+            p.lineTo(0, h);
+            p.closeSubpath();
+        }
+        painter.fillPath(p, colors.chrome);
+    }
+    else
+    {
+        painter.fillRect(grip->rect(), colors.chrome);
+    }
+#else
     painter.fillRect(grip->rect(), colors.chrome);
+#endif
     painter.setPen(Qt::NoPen);
     painter.setBrush(colors.muted);
 
